@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_sheet_corner_radius">24dp</dimen>
+    <dimen name="bottom_sheet_start_padding">2dp</dimen>
+    <dimen name="bottom_sheet_right_padding">2dp</dimen>
+</resources>
