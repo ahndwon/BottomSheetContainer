@@ -10,12 +10,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val bottom = ExpandableBottomSheet.Builder(TestFragment(), coordinator)
+            .isCloseable(true)
+            .setPeekHeight(200)
+            .build()
+
         bottomSheetButton.setOnClickListener {
-            ExpandableBottomSheet.Builder(TestFragment(), coordinator)
-                .isCloseable(true)
-                .setPeekHeight(200)
-                .build()
-                .show(supportFragmentManager)
+            bottom.show(supportFragmentManager)
         }
 
     }
