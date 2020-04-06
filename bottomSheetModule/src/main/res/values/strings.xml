@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="description_expand_handle">bottom sheet expand handle</string>
+    <string name="description_bottom_sheet_close_button">bottom sheet close button</string>
+</resources>

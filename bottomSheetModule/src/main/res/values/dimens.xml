@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_sheet_corner_radius">24dp</dimen>
+    <dimen name="bottom_sheet_start_padding">2dp</dimen>
+    <dimen name="bottom_sheet_right_padding">2dp</dimen>
+
+    <dimen name="expand_handle_radius">12dp</dimen>
+    <dimen name="expand_handle_height">5dp</dimen>
+    <dimen name="expand_handle_margin">14dp</dimen>
+    <dimen name="expand_handle_width">56dp</dimen>
+
+    <dimen name="icon_close_button_width">40dp</dimen>
+    <dimen name="icon_close_button_height">40dp</dimen>
+    <dimen name="icon_close_button_padding">6dp</dimen>
+    <dimen name="icon_close_button_margin">8dp</dimen>
+
+    <dimen name="toolbar_title_padding">6dp</dimen>
+    <dimen name="toolbar_title_margin">8dp</dimen>
+</resources>
