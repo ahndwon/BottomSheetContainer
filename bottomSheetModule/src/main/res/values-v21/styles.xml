@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="NoDimBottomSheetDialogTheme" parent="NoDimBottomSheetDialog">
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

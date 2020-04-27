@@ -115,7 +115,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
      *
      * @return
      */
-    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+    override fun getTheme(): Int =
+        if (isRemoveDim) R.style.NoDimBottomSheetDialogTheme else R.style.BottomSheetDialogTheme
 
     override fun onCreateView(
         inflater: LayoutInflater,
