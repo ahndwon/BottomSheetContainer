@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     >
 
-    <TextView
+    <EditText
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:inputType="numberDecimal" />
 
     <Button
         android:id="@+id/anotherDialogButton"
@@ -26,6 +27,17 @@
         app:layout_constraintTop_toBottomOf="@id/text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/activityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="activity!"
+        style="@style/Widget.AppCompat.Button.Colored"
+        app:layout_constraintTop_toTopOf="@id/anotherDialogButton"
+        app:layout_constraintBottom_toBottomOf="@id/anotherDialogButton"
+        app:layout_constraintStart_toEndOf="@id/anotherDialogButton" />
 
     <TextView
         android:id="@+id/footer"

@@ -1,4 +1,4 @@
-package com.example.nestedfragmentbottomsheetdialog
+package com.ahndwon.nestedfragmentbottomsheetdialog
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.shinhan.bottomsheetcontainer", appContext.packageName)
+        assertEquals("com.shinhan.bottomsheetcontainer.test", appContext.packageName)
     }
 }

@@ -1,15 +1,17 @@
-package com.example.nestedfragmentbottomsheetdialog
+package com.ahndwon.nestedfragmentbottomsheetdialog
 
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Point
+import android.graphics.drawable.Drawable
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
+import android.view.KeyEvent.KEYCODE_BACK
+import android.view.KeyEvent.KEYCODE_HOME
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.StyleRes
 import androidx.core.view.updateLayoutParams
@@ -20,12 +22,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.*
+import kotlin.math.ceil
+
 
 //
 //  NestedFragmentBottomSheetDialog
 //
 //  Created by Dongwon Ahn on 2020-03-30
-//  Copyright © 2020 Shinhan. All rights reserved.
 //
 
 /**
@@ -68,7 +71,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     var topMargin: Float = 0f
 
-    var layerMargin: Float = DEFAULT_LAYER_MARGIN
+    var softKeyMode: Int? = null
+
+    var closeButtonDrawable: Drawable? = null
 
     @StyleRes
     var titleTextStyle: Int? = null
@@ -82,15 +87,14 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     var callback: BottomSheetBehavior.BottomSheetCallback? = null
 
-
-    private var isDebug = false
+    private var isOnResume: Boolean = false
 
     init {
         this.fragment = builder.fragment
         this.isExpandHandle = builder.isExpandHandle
         this.peekHeight = builder.peekHeightDp
         this.topMargin = builder.topMargin
-        this.layerMargin = builder.layerMargin
+        this.softKeyMode = builder.softKeyMode
         this.isCloseable = builder.isCloseButton
         this.isHideable = builder.isHideable
         this.isFullScreen = builder.isFullScreen
@@ -102,6 +106,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.isRemoveToolbar = builder.isRemoveToolbar
         this.isLayerDetectionOn = builder.isLayerDetectionOn
         this.isRemoveDim = builder.isRemoveDim
+        this.closeButtonDrawable = builder.closeButtonDrawable
         this.callback = builder.callback
     }
 
@@ -121,8 +126,6 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
         childFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment).commit()
 
-        if (layers < 0) layers = 0
-
         return view
     }
 
@@ -133,43 +136,68 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
      * fragment 를 담고 있는 R.id.fragmentContainer 의 height 를 조정
      */
     private fun setFullscreenWithMargin() {
-        if (isFullScreen.not()) return
+        view?.let { view ->
+            view.fragmentContainer?.updateLayoutParams {
+                this.height =
+                    getFragmentContainerSize() - convertDpToPx(
+                        view.context,
+                        topMargin
+                    )
+            }
+        }
+    }
 
-        val display = dialog?.ownerActivity?.windowManager?.defaultDisplay ?: return
-
-        val size = Point()
-        display.getSize(size)
-
+    private fun getFragmentContainerSize(): Int {
         val toolbarHeight = if (isRemoveToolbar) {
             0
         } else {
             view?.toolbar?.layoutParams?.height ?: 0
         }
 
-        view?.let { view ->
-            val layerDistance = if (isLayerDetectionOn) {
-                convertDpToPx(view.context, layerMargin) * (layers)
-            } else {
-                0
-            }
-
-            view.fragmentContainer?.updateLayoutParams {
-                this.height =
-                    size.y - toolbarHeight - convertDpToPx(
-                        view.context,
-                        topMargin
-                    ) - layerDistance
-            }
+        val navigationBarHeight = if (isSoftNavigationKeys()) {
+            getNavigationBarHeight()
+        } else {
+            0
         }
 
+        return getRealDeviceHeight() - getStatusBarHeight() - navigationBarHeight - toolbarHeight
+
+    }
+
+    private fun isSoftNavigationKeys(): Boolean {
+        val id: Int = resources
+            .getIdentifier("config_showNavigationBar", "bool", "android")
+        return if (id > 0) {
+            resources.getBoolean(id)
+        } else {
+            val hasBackKey = KeyCharacterMap.deviceHasKey(KEYCODE_BACK)
+            val hasHomeKey = KeyCharacterMap.deviceHasKey(KEYCODE_HOME)
+            !(hasBackKey && hasHomeKey)
+        }
+    }
+
+    private fun getRealDeviceHeight(): Int {
+        val display = dialog?.ownerActivity?.windowManager?.defaultDisplay ?: return 0
+        val size = Point()
+        display.getRealSize(size)
+        return size.y
+    }
+
+    private fun getNavigationBarHeight(): Int {
+        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else 0
     }
 
     override fun onResume() {
         super.onResume()
+//
+//        outerTextView.setOnClickListener {
+//            Toast.makeText(this.context, "outer text view!!", Toast.LENGTH_SHORT).show()
+//        }
 
-        if (isRemoveDim) {
-            removeDim()
-        }
+        isOnResume = true
 
         bottomSheet =
             dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
@@ -178,11 +206,14 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             sheetBehavior = BottomSheetBehavior.from(it)
         }
 
-        setFullscreenWithMargin()
-
         this@NestedFragmentBottomSheetDialog.view?.let {
             applySettings(it)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isOnResume = false
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -207,17 +238,19 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
             behavior.isHideable = isHideable
-            layers++
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        layers--
+    private fun getStatusBarHeight(): Int {
+        val resourceId: Int = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else ceil(
+            (if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density
+        ).toInt()
     }
 
     private fun addExpandHandle() {
-        view?.expandHandleStub?.inflate()
+        val inflated = view?.expandHandleStub?.inflate()
+        inflated?.setOnClickListener { dismiss() }
     }
 
     /**
@@ -232,9 +265,24 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             addExpandHandle()
         }
 
+        if (isRemoveDim) {
+            removeDim()
+        }
+
+        if (isFullScreen) {
+            setFullscreenWithMargin()
+        }
+
+        setSoftInputMode()
         setupToolbar(inflated)
         setupPeekHeight(inflated)
         setupCallbacks()
+    }
+
+    private fun setSoftInputMode() {
+        softKeyMode?.let { mode ->
+            dialog?.window?.setSoftInputMode(mode)
+        }
     }
 
     /**
@@ -279,7 +327,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     /**
      * BottomSheetBehavior callback 들을 적용함
      *
-     * 콜백을 여러개 추가 가능
+     * Builder 에서 추가하는 callback 및 EXPANDED -> HIDDEN 으로 바로 변경하는 callback 도 추
      */
     private fun setupCallbacks() {
         callback?.let { callback ->
@@ -299,6 +347,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
      * 바로 STATE_EXPANDED -> STATE_HIDDEN 으로 가기 위해
      * 다이얼로그가 STATE_EXPANDED 되고 난 후 STATE를 저장
      *
+     * PeekHeight 를 지정할 경우 앱 전환 후 복귀 시 EXPANDED -> COLLAPSED 로 바뀌기 떄문에
+     * 복귀 후에도 바텀 시트가 최대 확장되어 있도록 하기 위해 hasExpanded 사용     *
      *
      * @param behavior 현재 bottom sheet의 BottomSheetBehavior<FrameLayout>
      */
@@ -316,7 +366,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                     tempState == BottomSheetBehavior.STATE_SETTLING &&
                     slideOffset < 0.9
                 ) {
-                    hide()
+                    if (isOnResume) {
+                        hide()
+                    }
                 }
             }
 
@@ -327,12 +379,22 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
                 beforeState = tempState
 
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    setFullscreenWithMargin()
+                }
+
                 if (isHideable &&
                     hasExpanded &&
                     beforeState == BottomSheetBehavior.STATE_SETTLING &&
                     newState == BottomSheetBehavior.STATE_COLLAPSED
                 ) {
-                    hide()
+                    if (isOnResume.not()) {
+                        hide()
+                        isOnResume = false
+                    } else { // 앱 전환 후
+                        expand()
+                        hasExpanded = false
+                    }
                 }
 
                 tempState = newState
@@ -349,8 +411,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     private fun addIconCloseButton() {
         iconCloseButtonStub ?: return
 
-        val view = iconCloseButtonStub.inflate()
-        view.setOnClickListener { dismiss() }
+        val view = iconCloseButtonStub.inflate() as? ImageView
+        view?.setOnClickListener { dismiss() }
+        view?.setImageDrawable(closeButtonDrawable)
     }
 
     /**
@@ -472,7 +535,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var topMargin: Float = 0f
             private set
 
-        var layerMargin: Float = DEFAULT_LAYER_MARGIN
+        var softKeyMode: Int? = null
             private set
 
         @StyleRes
@@ -481,6 +544,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
         @StyleRes
         var closeButtonTextStyle: Int? = null
+            private set
+
+        var closeButtonDrawable: Drawable? = null
             private set
 
         var callback: BottomSheetBehavior.BottomSheetCallback? = null
@@ -550,19 +616,6 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         fun removeToolbar(isRemove: Boolean) = apply { this.isRemoveToolbar = isRemove }
 
         /**
-         * Layer 인식 사용
-         *
-         * BottomSheet 여러 개 생성 시 자동으로 간격을 주어 먼저 호출된 BottomSheet 들이 조금 드러나게함용
-         * 단, showExpanded 와 isFullScreen 이 true 여야 하고 fragment 의 root view 가 match_parent 여야 한다.
-         *
-         * @see setLayerMargin 으로 조정 가능
-         */
-        fun useLayerDetection() = apply {
-            this.isLayerDetectionOn = true
-            this.showExpanded = true
-        }
-
-        /**
          * 백그라운드 dim 제거
          *
          * @param isRemove true 시 dim 제거
@@ -589,19 +642,6 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         fun setTopMargin(dp: Float) = apply { this.topMargin = dp }
 
         /**
-         * LayerMargin 값 변경
-         *
-         * 각 layer(다이얼로그) 간의 간격 조정
-         * 입력한 dp 가 pixel 수로 계산된 뒤 적용
-         *
-         * default : 56f
-         * @see DEFAULT_LAYER_MARGIN
-         *
-         * @param dp 설정하고자 하는 layerMargin
-         */
-        fun setLayerMargin(dp: Float) = apply { this.layerMargin = dp }
-
-        /**
          * Title 에 style 적용
          *
          * 설정하고자 하는 style 을 xml 에 정의해야함
@@ -617,6 +657,22 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          * @param styleId  설정하고자 하는 style의 ResId
          */
         fun setTitleTextAppearance(@StyleRes styleId: Int) = apply { this.titleTextStyle = styleId }
+
+
+        /**
+         * 다이얼로그 내의 softKeyMode 설정
+         *
+         * default 는 SOFT_INPUT_ADJUST_PAN 로 되어있음
+         *
+         * @sample WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+         * @sample WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+         *
+         *
+         * @param mode WindowManager.LayoutParams.softInputMode
+         */
+        fun setSoftKeyMode(mode: Int) = apply {
+            this.softKeyMode = mode
+        }
 
         /**
          * TextCloseButton 에 style 적용
@@ -635,6 +691,16 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          */
         fun setCloseButtonTextAppearance(@StyleRes styleId: Int) =
             apply { this.closeButtonTextStyle = styleId }
+
+        /**
+         * 닫기 버튼 이미지 설정
+         *
+         * @param drawable
+         */
+        fun setCloseButtonDrawable(drawable: Drawable?) = apply {
+            this.isCloseButton = true
+            this.closeButtonDrawable = drawable
+        }
 
         /**
          * BottomSheetCallback 추가
@@ -665,16 +731,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         .isCloseable(true)
         .setTitle("test title")
         .isHideable(false)
-        .useLayerDetection()
         .build()
          *
          */
         fun build() = NestedFragmentBottomSheetDialog(this)
     }
-
-    companion object {
-        private const val DEFAULT_LAYER_MARGIN = 56f
-        var layers = 0
-    }
 }
-

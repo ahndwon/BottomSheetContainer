@@ -1,9 +1,12 @@
-package com.example.nestedfragmentbottomsheetdialog
+package com.ahndwon.bottomsheetcontainer
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.ahndwon.nestedfragmentbottomsheetdialog.NestedFragmentBottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -29,16 +32,16 @@ class MainActivity : AppCompatActivity() {
                 .setCallback(callback)
                 .setExpandHandle(true)
                 .removeDim(false)
-                .setTopMargin(100f)
-                .removeToolbar(true)
-                .setLayerMargin(100f)
-                .setPeekHeight(300f)
+//                .setTopMargin(100f)
+//                .removeToolbar(true)
+//                .setLayerMargin(100f)
+//                .setPeekHeight(300f)
                 .showExpanded(true)
                 .setFullScreen(true)
                 .setCloseButton(true)
                 .setTitle("test title")
-                .setTextCloseButton("닫기")
-                .useLayerDetection()
+//                .setTextCloseButton("닫기")
+//                .useLayerDetection()
                 .build().show(supportFragmentManager, "")
         }
 
@@ -46,9 +49,9 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestScrollViewFragment())
                 .setCallback(callback)
                 .setExpandHandle(true)
-                .removeDim(true)
+//                .removeDim(true)
                 .setCloseButton(true)
-                .showExpanded(true)
+//                .showExpanded(true)
                 .setTitle("테스트")
                 .isHideable(true)
                 .build()
@@ -59,8 +62,7 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestRecyclerViewFragment())
                 .setCallback(callback)
                 .setExpandHandle(true)
-                .setPeekHeight(200f)
-                .removeDim(true)
+//                .removeDim(true)
                 .setCloseButton(true)
                 .setTitle("테스트")
                 .setPeekHeight(320f)
@@ -111,6 +113,7 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
                 .showExpanded(true)
+                .removeToolbar(true)
                 .setFullScreen(true) // Fragment의 child view들이 충분할 경우 필요없음
                 .build().show(supportFragmentManager, "")
         }
@@ -127,6 +130,12 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
                 .setCloseButton(true)
+                .setCloseButtonDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        android.R.drawable.ic_menu_delete
+                    )
+                )
                 .setFullScreen(true)
                 .build().show(supportFragmentManager, "")
         }
@@ -134,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         titleButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
-                .setTitle("제목")
+                .setTitle("\uF199")
                 .setTitleTextAppearance(R.style.TestDialogTitle)
                 .build().show(supportFragmentManager, "")
         }
@@ -156,14 +165,13 @@ class MainActivity : AppCompatActivity() {
                 .build().show(supportFragmentManager, "")
         }
 
-        layerDetectionButton.setOnClickListener {
+        softKeyResizeButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
-                .useLayerDetection()
-                .showExpanded(true)
-                .setFullScreen(true)
+                .setTextCloseButton("닫기버튼")
+                .setSoftKeyMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                .setCloseButtonTextAppearance(R.style.TestDialogCancel)
                 .build().show(supportFragmentManager, "")
         }
-
     }
 }

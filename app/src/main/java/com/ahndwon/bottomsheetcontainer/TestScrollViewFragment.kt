@@ -1,4 +1,4 @@
-package com.example.nestedfragmentbottomsheetdialog
+package com.ahndwon.bottomsheetcontainer
 
 import android.os.Bundle
 import android.view.LayoutInflater

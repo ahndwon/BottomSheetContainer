@@ -1,10 +1,12 @@
-package com.example.nestedfragmentbottomsheetdialog
+package com.ahndwon.bottomsheetcontainer
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ahndwon.nestedfragmentbottomsheetdialog.NestedFragmentBottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_test.view.*
 
@@ -33,7 +35,7 @@ class TestFragment : BaseFragment() {
                 .setCallback(callback)
                 .setExpandHandle(true)
                 .removeDim(true)
-//                .setTopMargin(100f)
+                .setTopMargin(100f)
 //                .setLayerMargin(100f)
 //                .setPeekHeight(600f)
                 .showExpanded(true)
@@ -42,14 +44,17 @@ class TestFragment : BaseFragment() {
                 .setCloseButton(true)
                 .setTextCloseButton("닫기")
                 .setTitle("test title")
-                .useLayerDetection()
                 .setTitleTextAppearance(R.style.TestDialogTitle)
                 .setCloseButtonTextAppearance(R.style.TestDialogCancel)
 
 
             dialog.build().show(childFragmentManager, "")
-
         }
+
+        view.activityButton.setOnClickListener {
+            startActivity(Intent(view.context, MainActivity::class.java))
+        }
+
 
         return view
     }

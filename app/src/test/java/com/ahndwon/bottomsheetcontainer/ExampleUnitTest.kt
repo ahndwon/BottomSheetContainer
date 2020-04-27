@@ -1,4 +1,4 @@
-package com.example.nestedfragmentbottomsheetdialog
+package com.ahndwon.nestedfragmentbottomsheetdialog
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
