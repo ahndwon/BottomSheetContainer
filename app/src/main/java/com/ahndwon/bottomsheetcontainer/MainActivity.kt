@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.ahndwon.nestedfragmentbottomsheetdialog.NestedFragmentBottomSheetDialog
@@ -171,6 +172,24 @@ class MainActivity : AppCompatActivity() {
                 .setTextCloseButton("닫기버튼")
                 .setSoftKeyMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 .setCloseButtonTextAppearance(R.style.TestDialogCancel)
+                .build().show(supportFragmentManager, "")
+        }
+
+        outerViewButton.setOnClickListener {
+            NestedFragmentBottomSheetDialog.Builder(TestFragment())
+                .setCallback(callback)
+                .setOuterView(R.layout.item_outer_view) {
+                    Toast.makeText(this, "outer view", Toast.LENGTH_SHORT).show()
+                }
+                .build().show(supportFragmentManager, "")
+        }
+
+        toolbar_background.setOnClickListener {
+            NestedFragmentBottomSheetDialog.Builder(TestFragment())
+                .setCallback(callback)
+                .setExpandHandle(true)
+                .setTitle("전체 계좌")
+                .setToolbarBackground(R.drawable.bg_bottom_sheet_toolbar_gradient)
                 .build().show(supportFragmentManager, "")
         }
     }

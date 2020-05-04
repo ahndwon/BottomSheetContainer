@@ -9,8 +9,18 @@
 
     </style>
 
+    <style name="OuterViewBottomSheetDialogTheme" parent="OuterViewBottomSheetDialog">
+
+    </style>
+
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <!--                <item name="android:background">@android:color/transparent</item>-->
+        <item name="android:background">@drawable/bg_bottom_sheet</item>
+    </style>
+
+    <style name="OuterViewBottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
+        <!--                <item name="android:background">@drawable/bg_bottom_sheet</item>-->
     </style>
 
     <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
@@ -23,6 +33,12 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="OuterViewBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/dimBackground</item>
+        <item name="bottomSheetStyle">@style/OuterViewBottomSheet</item>
     </style>
 
 </resources>

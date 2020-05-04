@@ -13,7 +13,10 @@ import android.view.KeyEvent.KEYCODE_HOME
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import androidx.annotation.StyleRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
@@ -21,7 +24,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.bottom_sheet_layout.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.view.expandHandleStub
+import kotlinx.android.synthetic.main.bottom_sheet_layout.view.fragmentContainer
+import kotlinx.android.synthetic.main.bottom_sheet_layout.view.titleStub
+import kotlinx.android.synthetic.main.bottom_sheet_layout.view.toolbar
+import kotlinx.android.synthetic.main.bottom_sheet_layout_outer_text.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout_outer_text.view.toolbarBorder
 import kotlin.math.ceil
 
 
@@ -87,6 +95,14 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     var callback: BottomSheetBehavior.BottomSheetCallback? = null
 
+    @LayoutRes
+    var outerView: Int? = null
+
+    var outerViewOnClick: (() -> Unit)? = null
+
+    @DrawableRes
+    var toolbarBackground: Int? = null
+
     private var isOnResume: Boolean = false
 
     init {
@@ -107,6 +123,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.isLayerDetectionOn = builder.isLayerDetectionOn
         this.isRemoveDim = builder.isRemoveDim
         this.closeButtonDrawable = builder.closeButtonDrawable
+        this.outerView = builder.outerView
+        this.outerViewOnClick = builder.outerViewOnClick
+        this.toolbarBackground = builder.toolbarBackground
         this.callback = builder.callback
     }
 
@@ -115,15 +134,32 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
      *
      * @return
      */
-    override fun getTheme(): Int =
-        if (isRemoveDim) R.style.NoDimBottomSheetDialogTheme else R.style.BottomSheetDialogTheme
+    override fun getTheme(): Int = when {
+        isRemoveDim && outerView == null -> R.style.NoDimBottomSheetDialogTheme
+
+        outerView != null -> R.style.OuterViewBottomSheetDialogTheme
+
+        else -> R.style.BottomSheetDialogTheme
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet_layout, container, false)
+        val layout = if (outerView != null) {
+            R.layout.bottom_sheet_layout_outer_text
+        } else {
+            R.layout.bottom_sheet_layout
+        }
+
+        val view = inflater.inflate(layout, container, false)
+
+        outerView?.let { outerView ->
+            val outer = LayoutInflater.from(view.context)
+                .inflate(outerView, view.outerLayout, true)
+            outer.setOnClickListener { outerViewOnClick?.invoke() }
+        }
 
         childFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment).commit()
 
@@ -193,10 +229,6 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     override fun onResume() {
         super.onResume()
-//
-//        outerTextView.setOnClickListener {
-//            Toast.makeText(this.context, "outer text view!!", Toast.LENGTH_SHORT).show()
-//        }
 
         isOnResume = true
 
@@ -298,6 +330,11 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
         if (!title.isNullOrEmpty()) {
             showTitle()
+        }
+
+        toolbarBackground?.let {
+            inflated.toolbar.background = ContextCompat.getDrawable(inflated.context, it)
+            inflated.toolbarBorder.visibility = View.GONE
         }
 
         if (isHideable) {
@@ -547,6 +584,17 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var closeButtonTextStyle: Int? = null
             private set
 
+        @LayoutRes
+        var outerView: Int? = null
+            private set
+
+        @DrawableRes
+        var toolbarBackground: Int? = null
+            private set
+
+        var outerViewOnClick: (() -> Unit)? = null
+            private set
+
         var closeButtonDrawable: Drawable? = null
             private set
 
@@ -692,6 +740,33 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          */
         fun setCloseButtonTextAppearance(@StyleRes styleId: Int) =
             apply { this.closeButtonTextStyle = styleId }
+
+        /**
+         * BottomSheet 바깥 쪽에 view 추가
+         *
+         * 추가하고자 하는 layout 을 xml 에 정의해야함
+         * BottomSheet 상단 외부에 있는 FrameLayout 에 View 가 inflate 되어 추가
+         *
+         *
+         * @param layoutId  추가하고자 하는 layout 의 ResId
+         */
+        fun setOuterView(@LayoutRes layoutId: Int, onClick: (() -> Unit)? = null) =
+            apply {
+                this.outerView = layoutId
+                this.outerViewOnClick = onClick
+            }
+
+        /**
+         * BottomSheet 상단 툴바 배경 적
+         *
+         * 추가하고자 하는 drawable 의 id 를 입력
+         *
+         * @param drawableId  추가하고자 하는 layout 의 ResId
+         */
+        fun setToolbarBackground(@DrawableRes drawableId: Int) =
+            apply {
+                this.toolbarBackground = drawableId
+            }
 
         /**
          * 닫기 버튼 이미지 설정
