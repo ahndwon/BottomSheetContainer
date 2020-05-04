@@ -2,4 +2,6 @@
 <resources>
     <string name="description_expand_handle">bottom sheet expand handle</string>
     <string name="description_bottom_sheet_close_button">bottom sheet close button</string>
+    <string name="bottom_sheet_okay">확인</string>
+    <string name="bottom_sheet_default_title">타이틀</string>
 </resources>
