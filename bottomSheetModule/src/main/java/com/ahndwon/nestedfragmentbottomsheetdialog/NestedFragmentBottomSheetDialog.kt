@@ -13,10 +13,8 @@ import android.view.KeyEvent.KEYCODE_HOME
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StyleRes
-import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
@@ -100,8 +98,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     var outerViewOnClick: (() -> Unit)? = null
 
-    @DrawableRes
-    var toolbarBackground: Int? = null
+    var toolbarBackground: Drawable? = null
 
     private var isOnResume: Boolean = false
 
@@ -333,7 +330,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         }
 
         toolbarBackground?.let {
-            inflated.toolbar.background = ContextCompat.getDrawable(inflated.context, it)
+            inflated.toolbar.background = it
             inflated.toolbarBorder.visibility = View.GONE
         }
 
@@ -588,8 +585,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var outerView: Int? = null
             private set
 
-        @DrawableRes
-        var toolbarBackground: Int? = null
+        var toolbarBackground: Drawable? = null
             private set
 
         var outerViewOnClick: (() -> Unit)? = null
@@ -757,15 +753,15 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             }
 
         /**
-         * BottomSheet 상단 툴바 배경 적
+         * BottomSheet 상단 툴바 배경 적용
          *
-         * 추가하고자 하는 drawable 의 id 를 입력
+         * 배경으로 원하는 drawable 을 적용
          *
-         * @param drawableId  추가하고자 하는 layout 의 ResId
+         * @param background  배경
          */
-        fun setToolbarBackground(@DrawableRes drawableId: Int) =
+        fun setToolbarBackground(background: Drawable?) =
             apply {
-                this.toolbarBackground = drawableId
+                this.toolbarBackground = background
             }
 
         /**

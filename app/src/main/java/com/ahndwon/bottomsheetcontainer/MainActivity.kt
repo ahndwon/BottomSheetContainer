@@ -189,7 +189,12 @@ class MainActivity : AppCompatActivity() {
                 .setCallback(callback)
                 .setExpandHandle(true)
                 .setTitle("전체 계좌")
-                .setToolbarBackground(R.drawable.bg_bottom_sheet_toolbar_gradient)
+                .setToolbarBackground(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.bg_bottom_sheet_toolbar_gradient
+                    )
+                )
                 .build().show(supportFragmentManager, "")
         }
     }

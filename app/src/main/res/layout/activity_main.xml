@@ -189,7 +189,7 @@
         android:id="@+id/toolbar_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="toolbar_background"
+        android:text="toolbar_bg"
         tools:ignore="HardcodedText" />
 
 </GridLayout>
