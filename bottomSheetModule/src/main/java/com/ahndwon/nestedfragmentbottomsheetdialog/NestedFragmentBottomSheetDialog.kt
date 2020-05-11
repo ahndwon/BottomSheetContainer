@@ -365,10 +365,11 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
      * Builder 에서 추가하는 callback 및 EXPANDED -> HIDDEN 으로 바로 변경하는 callback 도 추
      */
     private fun setupCallbacks() {
-        callback?.let { callback ->
-            sheetBehavior?.let { behavior ->
+        sheetBehavior?.let { behavior ->
+            addCollapseOnSwipeDown(behavior)
+
+            callback?.let { callback ->
                 behavior.addBottomSheetCallback(callback)
-                addCollapseOnSwipeDown(behavior)
             }
         }
     }

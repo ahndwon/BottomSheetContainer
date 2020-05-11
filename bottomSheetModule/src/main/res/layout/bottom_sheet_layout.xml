@@ -61,9 +61,8 @@
 
     <ViewStub
         android:id="@+id/expandHandleStub"
-        android:layout_width="@dimen/expand_handle_width"
-        android:layout_height="@dimen/expand_handle_height"
-        android:layout_marginTop="@dimen/expand_handle_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:inflatedId="@+id/expandHandle"
         android:layout="@layout/expand_handle"
         app:layout_constraintEnd_toEndOf="parent"

@@ -25,25 +25,28 @@ class MainActivity : AppCompatActivity() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 Log.d("onStateChanged", "offset : $newState")
             }
-
         }
 
+        Log.d("TEST", "안동원동".toByteArray().size.toString())
+        Log.d("TEST", "testest".toByteArray().size.toString())
+
         bottomSheetDialogButton.setOnClickListener {
-            NestedFragmentBottomSheetDialog.Builder(TestFragment())
+            val fragment = TestFragment()
+            val builder = NestedFragmentBottomSheetDialog.Builder(fragment)
                 .setCallback(callback)
                 .setExpandHandle(true)
                 .removeDim(false)
-//                .setTopMargin(100f)
-//                .removeToolbar(true)
-//                .setLayerMargin(100f)
-//                .setPeekHeight(300f)
                 .showExpanded(true)
+                .setExpandHandle(true)
                 .setFullScreen(true)
                 .setCloseButton(true)
                 .setTitle("test title")
-//                .setTextCloseButton("닫기")
-//                .useLayerDetection()
-                .build().show(supportFragmentManager, "")
+
+            val dialog = builder.build()
+
+            fragment.dialog = dialog
+
+            dialog.show(supportFragmentManager, "")
         }
 
         scrollTestButton.setOnClickListener {
@@ -52,6 +55,7 @@ class MainActivity : AppCompatActivity() {
                 .setExpandHandle(true)
 //                .removeDim(true)
                 .setCloseButton(true)
+                .setExpandHandle(true)
 //                .showExpanded(true)
                 .setTitle("테스트")
                 .isHideable(true)
@@ -65,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                 .setExpandHandle(true)
 //                .removeDim(true)
                 .setCloseButton(true)
+                .setExpandHandle(true)
                 .setTitle("테스트")
                 .setPeekHeight(320f)
                 .build()
@@ -82,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
                 .setPeekHeight(200f)
+                .setExpandHandle(true)
                 .removeDim(true)
                 .build().show(supportFragmentManager, "")
         }
@@ -90,16 +96,18 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
                 .setPeekHeight(300f)
+                .setExpandHandle(true)
                 .removeToolbar(true)
                 .build().show(supportFragmentManager, "")
         }
 
         topMargin200Button.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setTopMargin(200f)
-                .showExpanded(true)
+//                .setCallback(callback)
+                .setTopMargin(100f)
+//                .showExpanded(true)
                 .setFullScreen(true)
+                .setExpandHandle(true)
                 .build().show(supportFragmentManager, "")
         }
 
@@ -107,6 +115,7 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
                 .setPeekHeight(100f)
+                .setExpandHandle(true)
                 .build().show(supportFragmentManager, "")
         }
 
@@ -114,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
                 .showExpanded(true)
+                .setExpandHandle(true)
                 .removeToolbar(true)
                 .setFullScreen(true) // Fragment의 child view들이 충분할 경우 필요없음
                 .build().show(supportFragmentManager, "")
@@ -178,6 +188,7 @@ class MainActivity : AppCompatActivity() {
         outerViewButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                 .setCallback(callback)
+                .setExpandHandle(true)
                 .setOuterView(R.layout.item_outer_view) {
                     Toast.makeText(this, "outer view", Toast.LENGTH_SHORT).show()
                 }

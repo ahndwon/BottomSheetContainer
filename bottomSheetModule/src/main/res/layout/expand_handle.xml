@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/expand_handle_width"
-    android:layout_height="@dimen/expand_handle_height"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/expand_handle_padding"
     android:src="@drawable/bg_expand_handle"
     android:contentDescription="@string/description_expand_handle" />

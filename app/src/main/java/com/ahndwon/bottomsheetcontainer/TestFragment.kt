@@ -12,6 +12,8 @@ import kotlinx.android.synthetic.main.fragment_test.view.*
 
 class TestFragment : BaseFragment() {
 
+    var dialog: NestedFragmentBottomSheetDialog<TestFragment>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,25 +33,34 @@ class TestFragment : BaseFragment() {
         }
 
         view.anotherDialogButton.setOnClickListener {
-            val dialog = NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setExpandHandle(true)
-                .removeDim(true)
-                .setTopMargin(100f)
-//                .setLayerMargin(100f)
-//                .setPeekHeight(600f)
-                .showExpanded(true)
-                .setFullScreen(true)
-                .isHideable(true)
-                .setCloseButton(true)
-                .setTextCloseButton("닫기")
-                .setTitle("test title")
-                .setTitleTextAppearance(R.style.TestDialogTitle)
-                .setCloseButtonTextAppearance(R.style.TestDialogCancel)
-
-
-            dialog.build().show(childFragmentManager, "")
+            dialog?.dismiss()
         }
+
+//        view.anotherDialogButton.setOnClickListener {
+//            val fragment = TestFragment()
+//            val builder = NestedFragmentBottomSheetDialog.Builder(fragment)
+//                .setCallback(callback)
+//                .setExpandHandle(true)
+//                .removeDim(true)
+//                .setTopMargin(100f)
+////                .setLayerMargin(100f)
+////                .setPeekHeight(600f)
+//                .showExpanded(true)
+//                .setFullScreen(true)
+//                .isHideable(true)
+//                .setCloseButton(true)
+//                .setTextCloseButton("닫기")
+//                .setTitle("test title")
+//                .setTitleTextAppearance(R.style.TestDialogTitle)
+//                .setCloseButtonTextAppearance(R.style.TestDialogCancel)
+//
+//
+//            val dialog = builder.build()
+//
+//            fragment.dialog = dialog
+//
+//            dialog.show(childFragmentManager, "")
+//        }
 
         view.activityButton.setOnClickListener {
             startActivity(Intent(view.context, MainActivity::class.java))
