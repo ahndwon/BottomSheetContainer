@@ -50,7 +50,7 @@ import kotlin.math.ceil
  * @param builder
  */
 class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder: Builder<T>) :
-    BottomSheetDialogFragment() {
+        BottomSheetDialogFragment() {
     val fragment: T
 
     var isExpandHandle: Boolean = false
@@ -140,9 +140,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val layout = if (outerView != null) {
             R.layout.bottom_sheet_layout_outer_text
@@ -154,7 +154,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
         outerView?.let { outerView ->
             val outer = LayoutInflater.from(view.context)
-                .inflate(outerView, view.outerLayout, true)
+                    .inflate(outerView, view.outerLayout, true)
             outer.setOnClickListener { outerViewOnClick?.invoke() }
         }
 
@@ -173,10 +173,10 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         view?.let { view ->
             view.fragmentContainer?.updateLayoutParams {
                 this.height =
-                    getFragmentContainerSize() - convertDpToPx(
-                        view.context,
-                        topMargin
-                    )
+                        getFragmentContainerSize() - convertDpToPx(
+                                view.context,
+                                topMargin
+                        )
             }
         }
     }
@@ -200,7 +200,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     private fun isSoftNavigationKeys(): Boolean {
         val id: Int = resources
-            .getIdentifier("config_showNavigationBar", "bool", "android")
+                .getIdentifier("config_showNavigationBar", "bool", "android")
         return if (id > 0) {
             resources.getBoolean(id)
         } else {
@@ -230,7 +230,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         isOnResume = true
 
         bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
+                dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
 
         bottomSheet?.let {
             sheetBehavior = BottomSheetBehavior.from(it)
@@ -248,7 +248,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: BottomSheetDialog =
-            super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+                super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
         setDialogShowState(dialog)
 
@@ -261,8 +261,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
             val shownDialog: BottomSheetDialog = dialogInterface as BottomSheetDialog
             val bottomSheet =
-                shownDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                    ?: return@setOnShowListener
+                    shownDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+                            ?: return@setOnShowListener
 
             val behavior = BottomSheetBehavior.from(bottomSheet)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -274,7 +274,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     private fun getStatusBarHeight(): Int {
         val resourceId: Int = resources.getIdentifier("status_bar_height", "dimen", "android")
         return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else ceil(
-            (if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density
+                (if (VERSION.SDK_INT >= VERSION_CODES.M) 24 else 25) * resources.displayMetrics.density
         ).toInt()
     }
 
@@ -394,13 +394,13 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var hasExpanded = false
 
         behavior.addBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
+                BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (isHideable &&
-                    hasExpanded &&
-                    beforeState == BottomSheetBehavior.STATE_DRAGGING &&
-                    tempState == BottomSheetBehavior.STATE_SETTLING &&
-                    slideOffset < 0.9
+                        hasExpanded &&
+                        beforeState == BottomSheetBehavior.STATE_DRAGGING &&
+                        tempState == BottomSheetBehavior.STATE_SETTLING &&
+                        slideOffset < 0.9
                 ) {
                     if (isOnResume) {
                         hide()
@@ -416,16 +416,16 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                 beforeState = tempState
 
                 if (newState == BottomSheetBehavior.STATE_EXPANDED ||
-                    fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
-                    isFullScreen
+                        fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
+                        isFullScreen
                 ) {
                     setFullscreenWithMargin()
                 }
 
                 if (isHideable &&
-                    hasExpanded &&
-                    beforeState == BottomSheetBehavior.STATE_SETTLING &&
-                    newState == BottomSheetBehavior.STATE_COLLAPSED
+                        hasExpanded &&
+                        beforeState == BottomSheetBehavior.STATE_SETTLING &&
+                        newState == BottomSheetBehavior.STATE_COLLAPSED
                 ) {
                     if (isOnResume.not()) {
                         hide()
@@ -470,8 +470,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         view.text = closeButtonText
 
         TextViewCompat.setTextAppearance(
-            view,
-            closeButtonTextStyle ?: return
+                view,
+                closeButtonTextStyle ?: return
         )
     }
 
@@ -602,7 +602,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             private set
 
         fun setExpandHandle(isExpandHandle: Boolean) =
-            apply { this.isExpandHandle = isExpandHandle }
+                apply { this.isExpandHandle = isExpandHandle }
 
         fun setCloseButton(isButton: Boolean) = apply {
             this.isCloseButton = isButton
@@ -679,7 +679,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          * @param dp 설정하고자 하는 peekHeight
          */
         fun setPeekHeight(dp: Float) =
-            apply { this.peekHeightDp = dp }
+                apply { this.peekHeightDp = dp }
 
         /**
          * BottomSheet 상단 margin
@@ -739,7 +739,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          * @param styleId  설정하고자 하는 style의 ResId
          */
         fun setCloseButtonTextAppearance(@StyleRes styleId: Int) =
-            apply { this.closeButtonTextStyle = styleId }
+                apply { this.closeButtonTextStyle = styleId }
 
         /**
          * BottomSheet 바깥 쪽에 view 추가
@@ -751,10 +751,10 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          * @param layoutId  추가하고자 하는 layout 의 ResId
          */
         fun setOuterView(@LayoutRes layoutId: Int, onClick: (() -> Unit)? = null) =
-            apply {
-                this.outerView = layoutId
-                this.outerViewOnClick = onClick
-            }
+                apply {
+                    this.outerView = layoutId
+                    this.outerViewOnClick = onClick
+                }
 
         /**
          * BottomSheet 상단 툴바 배경 적용
@@ -764,9 +764,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          * @param background  배경
          */
         fun setToolbarBackground(background: Drawable?) =
-            apply {
-                this.toolbarBackground = background
-            }
+                apply {
+                    this.toolbarBackground = background
+                }
 
         /**
          * 닫기 버튼 이미지 설정
@@ -786,7 +786,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          * @param callback
          */
         fun setCallback(callback: BottomSheetBehavior.BottomSheetCallback) =
-            apply { this.callback = callback }
+                apply { this.callback = callback }
 
         /**
          * ExpandableBottomSheetDialog 빌드
