@@ -415,7 +415,10 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
                 beforeState = tempState
 
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED ||
+                    fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
+                    isFullScreen
+                ) {
                     setFullscreenWithMargin()
                 }
 
