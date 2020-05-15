@@ -192,6 +192,14 @@
         android:text="toolbar_bg"
         tools:ignore="HardcodedText" />
 
+    <Button
+        android:id="@+id/fix_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="fix_height"
+        tools:ignore="HardcodedText" />
+
+
 </GridLayout>
 
 

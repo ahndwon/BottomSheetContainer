@@ -33,14 +33,14 @@ class MainActivity : AppCompatActivity() {
         bottomSheetDialogButton.setOnClickListener {
             val fragment = TestFragment()
             val builder = NestedFragmentBottomSheetDialog.Builder(fragment)
-                .setCallback(callback)
-                .setExpandHandle(true)
-                .removeDim(false)
-                .showExpanded(true)
-                .setExpandHandle(true)
-                .setFullScreen(true)
-                .setCloseButton(true)
-                .setTitle("test title")
+                    .setCallback(callback)
+                    .setExpandHandle(true)
+                    .removeDim(false)
+                    .showExpanded(true)
+                    .setExpandHandle(true)
+                    .setFullScreen(true)
+                    .setCloseButton(true)
+                    .setTitle("test title")
 
             val dialog = builder.build()
 
@@ -51,162 +51,175 @@ class MainActivity : AppCompatActivity() {
 
         scrollTestButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestScrollViewFragment())
-                .setCallback(callback)
-                .setExpandHandle(true)
+                    .setCallback(callback)
+                    .setExpandHandle(true)
 //                .removeDim(true)
-                .setCloseButton(true)
-                .setExpandHandle(true)
+                    .setCloseButton(true)
+                    .setExpandHandle(true)
 //                .showExpanded(true)
-                .setTitle("테스트")
-                .isHideable(true)
-                .build()
-                .show(supportFragmentManager, "")
+                    .setTitle("테스트")
+                    .isHideable(true)
+                    .build()
+                    .show(supportFragmentManager, "")
         }
 
         recyclerViewTestButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestRecyclerViewFragment())
-                .setCallback(callback)
-                .setExpandHandle(true)
+                    .setCallback(callback)
+                    .setExpandHandle(true)
 //                .removeDim(true)
-                .setCloseButton(true)
-                .setExpandHandle(true)
-                .setTitle("테스트")
-                .setPeekHeight(320f)
-                .build()
-                .show(supportFragmentManager, "")
+                    .setCloseButton(true)
+                    .setExpandHandle(true)
+                    .setTopMargin(50f)
+                    .setTitle("테스트")
+                    .setPeekHeight(320f)
+                    .build()
+                    .show(supportFragmentManager, "")
         }
 
         noExpandHandleButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setExpandHandle(false)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setExpandHandle(false)
+                    .build().show(supportFragmentManager, "")
         }
 
         noDimButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setPeekHeight(200f)
-                .setExpandHandle(true)
-                .removeDim(true)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setPeekHeight(200f)
+                    .setExpandHandle(true)
+                    .removeDim(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         noToolbarButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setPeekHeight(300f)
-                .setExpandHandle(true)
-                .removeToolbar(true)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setPeekHeight(300f)
+                    .setExpandHandle(true)
+                    .removeToolbar(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         topMargin200Button.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
 //                .setCallback(callback)
-                .setTopMargin(100f)
+                    .setTopMargin(100f)
 //                .showExpanded(true)
-                .setFullScreen(true)
-                .setExpandHandle(true)
-                .build().show(supportFragmentManager, "")
+                    .setFullScreen(true)
+                    .setExpandHandle(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         peekHeight100Button.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setPeekHeight(100f)
-                .setExpandHandle(true)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setPeekHeight(100f)
+                    .setExpandHandle(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         expandedButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .showExpanded(true)
-                .setExpandHandle(true)
-                .removeToolbar(true)
-                .setFullScreen(true) // Fragment의 child view들이 충분할 경우 필요없음
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .showExpanded(true)
+                    .setExpandHandle(true)
+                    .removeToolbar(true)
+                    .setFullScreen(true) // Fragment의 child view들이 충분할 경우 필요없음
+                    .build().show(supportFragmentManager, "")
         }
 
         fullscreenButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .showExpanded(true)
-                .setFullScreen(true)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .showExpanded(true)
+                    .setFullScreen(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         closeButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setCloseButton(true)
-                .setCloseButtonDrawable(
-                    ContextCompat.getDrawable(
-                        this,
-                        android.R.drawable.ic_menu_delete
+                    .setCallback(callback)
+                    .setCloseButton(true)
+                    .setCloseButtonDrawable(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    android.R.drawable.ic_menu_delete
+                            )
                     )
-                )
-                .setFullScreen(true)
-                .build().show(supportFragmentManager, "")
+                    .setFullScreen(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         titleButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setTitle("\uF199")
-                .setTitleTextAppearance(R.style.TestDialogTitle)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setTitle("\uF199")
+                    .setTitleTextAppearance(R.style.TestDialogTitle)
+                    .build().show(supportFragmentManager, "")
         }
 
         textCloseButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setTextCloseButton("닫기버튼")
-                .setCloseButtonTextAppearance(R.style.TestDialogCancel)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setTextCloseButton("닫기버튼")
+                    .setCloseButtonTextAppearance(R.style.TestDialogCancel)
+                    .build().show(supportFragmentManager, "")
         }
 
         notHideableButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .isHideable(false)
-                .showExpanded(true)
-                .setFullScreen(true)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .isHideable(false)
+                    .showExpanded(true)
+                    .setFullScreen(true)
+                    .build().show(supportFragmentManager, "")
         }
 
         softKeyResizeButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setTextCloseButton("닫기버튼")
-                .setSoftKeyMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-                .setCloseButtonTextAppearance(R.style.TestDialogCancel)
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setTextCloseButton("닫기버튼")
+                    .setSoftKeyMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                    .setCloseButtonTextAppearance(R.style.TestDialogCancel)
+                    .build().show(supportFragmentManager, "")
         }
 
         outerViewButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setExpandHandle(true)
-                .setOuterView(R.layout.item_outer_view) {
-                    Toast.makeText(this, "outer view", Toast.LENGTH_SHORT).show()
-                }
-                .build().show(supportFragmentManager, "")
+                    .setCallback(callback)
+                    .setExpandHandle(true)
+                    .setFullScreen(true)
+                    .setOuterView(R.layout.item_outer_view) {
+                        Toast.makeText(this, "outer view", Toast.LENGTH_SHORT).show()
+                    }
+                    .build().show(supportFragmentManager, "")
         }
 
         toolbar_background.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
-                .setCallback(callback)
-                .setExpandHandle(true)
-                .setTitle("전체 계좌")
-                .setToolbarBackground(
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.bg_bottom_sheet_toolbar_gradient
+                    .setCallback(callback)
+                    .setExpandHandle(true)
+                    .setTitle("전체 계좌")
+                    .setToolbarBackground(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.bg_bottom_sheet_toolbar_gradient
+                            )
                     )
-                )
-                .build().show(supportFragmentManager, "")
+                    .build().show(supportFragmentManager, "")
+        }
+
+        fix_height.setOnClickListener {
+            NestedFragmentBottomSheetDialog.Builder(TestFixHeightFragment())
+                    .setTopMargin(50f)
+                    .setPeekHeight(500f)
+//                    .setFullScreen(true)
+//                    .showExpanded(true)
+//                    .setPeekHeight(400f)
+//                    .setExpandHandle(true)
+                    .build().show(supportFragmentManager, "")
         }
     }
 }

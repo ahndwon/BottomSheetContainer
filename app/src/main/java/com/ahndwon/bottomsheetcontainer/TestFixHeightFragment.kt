@@ -10,16 +10,16 @@ import com.ahndwon.nestedfragmentbottomsheetdialog.NestedFragmentBottomSheetDial
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_test.view.*
 
-class TestFragment : BaseFragment() {
+class TestFixHeightFragment : BaseFragment() {
 
-    var dialog: NestedFragmentBottomSheetDialog<TestFragment>? = null
+    var dialog: NestedFragmentBottomSheetDialog<TestFixHeightFragment>? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_test, container, false)
+        val view = inflater.inflate(R.layout.fragment_test_fix_height, container, false)
 
         val callback = object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -37,7 +37,7 @@ class TestFragment : BaseFragment() {
         }
 
         view.anotherDialogButton.setOnClickListener {
-            val fragment = TestFragment()
+            val fragment = TestFixHeightFragment()
             val builder = NestedFragmentBottomSheetDialog.Builder(fragment)
                     .setCallback(callback)
                     .setExpandHandle(true)

@@ -19,6 +19,16 @@
         android:inputType="numberDecimal" />
 
     <Button
+        android:id="@+id/dismissDialogButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="dismiss"
+        style="@style/Widget.AppCompat.Button.Colored"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/anotherDialogButton" />
+
+    <Button
         android:id="@+id/anotherDialogButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

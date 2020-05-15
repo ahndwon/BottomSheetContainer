@@ -21,11 +21,13 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.iconCloseButtonStub
+import kotlinx.android.synthetic.main.bottom_sheet_layout.textCloseButtonStub
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.expandHandleStub
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.fragmentContainer
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.titleStub
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.toolbar
+import kotlinx.android.synthetic.main.bottom_sheet_layout_outer_text.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout_outer_text.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout_outer_text.view.toolbarBorder
 import kotlin.math.ceil
@@ -102,6 +104,10 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     private var isOnResume: Boolean = false
 
+    private var firstMeasureHeight = 0
+
+    private var isMarginExpanded: Boolean
+
     init {
         this.fragment = builder.fragment
         this.isExpandHandle = builder.isExpandHandle
@@ -124,6 +130,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.outerViewOnClick = builder.outerViewOnClick
         this.toolbarBackground = builder.toolbarBackground
         this.callback = builder.callback
+
+        isMarginExpanded = !isFullScreen
     }
 
     /**
@@ -134,7 +142,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     override fun getTheme(): Int = when {
         isRemoveDim && outerView == null -> R.style.NoDimBottomSheetDialogTheme
 
-        outerView != null -> R.style.OuterViewBottomSheetDialogTheme
+        outerView != null || isMarginExpanded -> R.style.OuterViewBottomSheetDialogTheme
 
         else -> R.style.BottomSheetDialogTheme
     }
@@ -144,7 +152,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val layout = if (outerView != null) {
+        val layout = if (outerView != null || isMarginExpanded) {
             R.layout.bottom_sheet_layout_outer_text
         } else {
             R.layout.bottom_sheet_layout
@@ -156,6 +164,13 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             val outer = LayoutInflater.from(view.context)
                     .inflate(outerView, view.outerLayout, true)
             outer.setOnClickListener { outerViewOnClick?.invoke() }
+        }
+
+        if (isMarginExpanded) {
+            val newLayoutParams = view.outerLayout.layoutParams.apply {
+                height = convertDpToPx(view.context, topMargin)
+            }
+            view.outerLayout.layoutParams = newLayoutParams
         }
 
         childFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment).commit()
@@ -172,11 +187,34 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     private fun setFullscreenWithMargin() {
         view?.let { view ->
             view.fragmentContainer?.updateLayoutParams {
-                this.height =
-                        getFragmentContainerSize() - convertDpToPx(
-                                view.context,
-                                topMargin
-                        )
+                this.height = getFragmentContainerSize() - convertDpToPx(
+                        view.context,
+                        topMargin
+                )
+            }
+        }
+    }
+
+    private fun applyTopMargin(isOuterView: Boolean) {
+        view?.let { view ->
+            view.fragmentContainer?.let { container ->
+                container.updateLayoutParams {
+                    val maxContainerSize = getFragmentContainerSize()
+                    val containerHeight = container.measuredHeight
+
+                    if (maxContainerSize > containerHeight) return
+
+                    val height = if (maxContainerSize > containerHeight)
+                        containerHeight
+                    else
+                        maxContainerSize
+
+                    if (firstMeasureHeight == 0) firstMeasureHeight = height
+
+                    val outerLayoutHeight = if (isOuterView) outerLayout.measuredHeight else 0
+
+                    this.height = firstMeasureHeight - convertDpToPx(view.context, topMargin) - outerLayoutHeight
+                }
             }
         }
     }
@@ -299,8 +337,17 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             removeDim()
         }
 
-        if (isFullScreen) {
+        if (isFullScreen && outerView == null) {
             setFullscreenWithMargin()
+        }
+
+        if (outerView == null && fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
+                isFullScreen) {
+            setFullscreenWithMargin()
+        }
+
+        if (outerView != null) {
+            applyTopMargin(true)
         }
 
         setSoftInputMode()
@@ -396,12 +443,14 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         behavior.addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                if (isHideable &&
+
+                val isHideAfterExpand = isHideable &&
                         hasExpanded &&
                         beforeState == BottomSheetBehavior.STATE_DRAGGING &&
                         tempState == BottomSheetBehavior.STATE_SETTLING &&
                         slideOffset < 0.9
-                ) {
+
+                if (isHideAfterExpand) {
                     if (isOnResume) {
                         hide()
                     }
@@ -415,11 +464,20 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
                 beforeState = tempState
 
-                if (newState == BottomSheetBehavior.STATE_EXPANDED &&
-                        (fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
-                                isFullScreen)
-                ) {
-                    setFullscreenWithMargin()
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+
+                    if (fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
+                            isFullScreen && outerView == null) {
+                        setFullscreenWithMargin()
+                    }
+
+                    if (isMarginExpanded) {
+                        applyTopMargin(false)
+                    }
+
+                    if (outerView != null) {
+                        applyTopMargin(true)
+                    }
                 }
 
                 if (isHideable &&
