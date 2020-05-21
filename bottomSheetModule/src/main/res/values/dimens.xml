@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bottom_sheet_corner_radius">24dp</dimen>
+    <dimen name="bottom_sheet_corner_radius">15dp</dimen>
     <dimen name="bottom_sheet_start_padding">2dp</dimen>
     <dimen name="bottom_sheet_right_padding">2dp</dimen>
 
@@ -11,9 +11,12 @@
 
     <dimen name="icon_close_button_width">40dp</dimen>
     <dimen name="icon_close_button_height">40dp</dimen>
-    <dimen name="icon_close_button_padding">6dp</dimen>
-    <dimen name="icon_close_button_margin">8dp</dimen>
+    <dimen name="icon_close_button_padding">8dp</dimen>
+    <dimen name="close_button_margin">7dp</dimen>
+    <!--    padding + margin = 15-->
 
-    <dimen name="toolbar_title_padding">6dp</dimen>
-    <dimen name="toolbar_title_margin">8dp</dimen>
+    <dimen name="text_close_button_margin">15dp</dimen>
+
+    <dimen name="toolbar_title_margin">20dp</dimen>
+    <dimen name="toolbar_height">60dp</dimen>
 </resources>

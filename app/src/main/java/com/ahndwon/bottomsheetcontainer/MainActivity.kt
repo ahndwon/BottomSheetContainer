@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                     .setCloseButtonDrawable(
                             ContextCompat.getDrawable(
                                     this,
-                                    android.R.drawable.ic_menu_delete
+                                    R.drawable.ic_close_wh
                             )
                     )
                     .setFullScreen(true)
@@ -155,7 +155,20 @@ class MainActivity : AppCompatActivity() {
         titleButton.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                     .setCallback(callback)
-                    .setTitle("\uF199")
+                    .setTitle("전체 계좌")
+                    .setToolbarBackground(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.bg_bottom_sheet_toolbar_gradient
+                            )
+                    )
+                    .setCloseButton(true)
+                    .setCloseButtonDrawable(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.ic_close_wh
+                            )
+                    )
                     .setTitleTextAppearance(R.style.TestDialogTitle)
                     .build().show(supportFragmentManager, "")
         }
@@ -191,6 +204,20 @@ class MainActivity : AppCompatActivity() {
                     .setCallback(callback)
                     .setExpandHandle(true)
                     .setFullScreen(true)
+                    .setTitle("전체 계좌")
+                    .setToolbarBackground(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.bg_bottom_sheet_toolbar_gradient
+                            )
+                    )
+                    .setCloseButton(true)
+                    .setCloseButtonDrawable(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.ic_close_wh
+                            )
+                    )
                     .setOuterView(R.layout.item_outer_view) {
                         Toast.makeText(this, "outer view", Toast.LENGTH_SHORT).show()
                     }
@@ -206,6 +233,13 @@ class MainActivity : AppCompatActivity() {
                             ContextCompat.getDrawable(
                                     this,
                                     R.drawable.bg_bottom_sheet_toolbar_gradient
+                            )
+                    )
+                    .setCloseButton(true)
+                    .setCloseButtonDrawable(
+                            ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.ic_close_wh
                             )
                     )
                     .build().show(supportFragmentManager, "")

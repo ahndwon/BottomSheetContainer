@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners
-        android:topRightRadius="24dp"
-        android:topLeftRadius="24dp" />
+        android:topRightRadius="@dimen/bottom_sheet_corner_radius"
+        android:topLeftRadius="@dimen/bottom_sheet_corner_radius" />
     <gradient
         android:angle="180"
-        android:endColor="#32cafc"
-        android:startColor="#8373fe" />
+        android:endColor="#71a3ff"
+        android:startColor="#7c64fa" />
 </shape>
