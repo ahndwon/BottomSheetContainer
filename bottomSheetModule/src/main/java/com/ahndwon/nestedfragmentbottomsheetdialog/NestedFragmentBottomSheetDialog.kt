@@ -108,6 +108,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     private var isMarginExpanded: Boolean
 
+    private var isLockSwipe: Boolean
+
     init {
         this.fragment = builder.fragment
         this.isExpandHandle = builder.isExpandHandle
@@ -130,6 +132,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.outerViewOnClick = builder.outerViewOnClick
         this.toolbarBackground = builder.toolbarBackground
         this.callback = builder.callback
+        this.isLockSwipe = builder.isLockSwipe
 
         isMarginExpanded = !isFullScreen
     }
@@ -458,6 +461,11 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (isLockSwipe && newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    return
+                }
+
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     hasExpanded = true
                 }
@@ -659,6 +667,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var callback: BottomSheetBehavior.BottomSheetCallback? = null
             private set
 
+        var isLockSwipe: Boolean = false
+            private set
+
         fun setExpandHandle(isExpandHandle: Boolean) =
                 apply { this.isExpandHandle = isExpandHandle }
 
@@ -845,6 +856,19 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          */
         fun setCallback(callback: BottomSheetBehavior.BottomSheetCallback) =
                 apply { this.callback = callback }
+
+        /**
+         * Bottom Sheet swipe 제거
+         *
+         * bottom sheet 을 swipe 해도 움직이지 않음
+         *
+         * 단, 반드시 showExpanded == true 여야 한다.
+         *
+         */
+        fun lockSwipe() = apply {
+            this.isLockSwipe = true
+            this.showExpanded = true
+        }
 
         /**
          * ExpandableBottomSheetDialog 빌드

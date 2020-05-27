@@ -177,6 +177,8 @@ class MainActivity : AppCompatActivity() {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
                     .setCallback(callback)
                     .setTextCloseButton("닫기버튼")
+                    .lockSwipe()
+                    .showExpanded(true)
                     .setCloseButtonTextAppearance(R.style.TestDialogCancel)
                     .build().show(supportFragmentManager, "")
         }
