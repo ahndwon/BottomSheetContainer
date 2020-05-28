@@ -108,7 +108,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     private var isMarginExpanded: Boolean
 
-    private var isLockSwipe: Boolean
+    var isLockSwipe: Boolean
+
+    var slideOffset: Double = DEFAULT_SLIDE_OFFSET
 
     init {
         this.fragment = builder.fragment
@@ -133,6 +135,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.toolbarBackground = builder.toolbarBackground
         this.callback = builder.callback
         this.isLockSwipe = builder.isLockSwipe
+        this.slideOffset = builder.slideOffset
 
         isMarginExpanded = !isFullScreen
     }
@@ -451,7 +454,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                         hasExpanded &&
                         beforeState == BottomSheetBehavior.STATE_DRAGGING &&
                         tempState == BottomSheetBehavior.STATE_SETTLING &&
-                        slideOffset < 0.9
+                        slideOffset < this@NestedFragmentBottomSheetDialog.slideOffset
 
                 if (isHideAfterExpand) {
                     if (isOnResume) {
@@ -670,6 +673,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var isLockSwipe: Boolean = false
             private set
 
+        var slideOffset: Double = DEFAULT_SLIDE_OFFSET
+            private set
+
         fun setExpandHandle(isExpandHandle: Boolean) =
                 apply { this.isExpandHandle = isExpandHandle }
 
@@ -871,6 +877,18 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         }
 
         /**
+         * Bottom Sheet slide offset 설정
+         *
+         * 설정 값에 따라 bottom sheet 를 내리기 위한 swipe 양이 달라짐
+         * 값이 작아질 수록 더욱 많이 하단으로 스와이프 해야 bottom sheet 가 hide 됨
+         *
+         * -1.0 ~ 1.0 (hide ~ expanded)
+         *
+         *
+         */
+        fun setSlideOffset(offset: Double) = apply { this.slideOffset = offset }
+
+        /**
          * ExpandableBottomSheetDialog 빌드
          *
          * Builder 를 통해 설정들을 한 후 마지막에 build 하여 사
@@ -893,5 +911,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          *
          */
         fun build() = NestedFragmentBottomSheetDialog(this)
+    }
+
+    companion object {
+        const val DEFAULT_SLIDE_OFFSET = 0.3
     }
 }
