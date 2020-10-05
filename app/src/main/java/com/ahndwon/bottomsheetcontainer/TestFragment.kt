@@ -72,7 +72,6 @@ class TestFragment : BaseFragment(), DialogInterface.OnShowListener {
     }
 
     override fun onShow(dialog: DialogInterface?) {
-        Log.d(TAG, "onShow: null")
         Log.d(TAG, "onShow: $dialog")
     }
 
