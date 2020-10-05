@@ -1,5 +1,6 @@
 package com.ahndwon.bottomsheetcontainer
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,14 +11,14 @@ import com.ahndwon.nestedfragmentbottomsheetdialog.NestedFragmentBottomSheetDial
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_test.view.*
 
-class TestFragment : BaseFragment() {
+class TestFragment : BaseFragment(), DialogInterface.OnShowListener {
 
     var dialog: NestedFragmentBottomSheetDialog<TestFragment>? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_test, container, false)
 
@@ -68,5 +69,14 @@ class TestFragment : BaseFragment() {
 
 
         return view
+    }
+
+    override fun onShow(dialog: DialogInterface?) {
+        Log.d(TAG, "onShow: null")
+        Log.d(TAG, "onShow: $dialog")
+    }
+
+    companion object {
+        const val TAG = "TestFragment"
     }
 }

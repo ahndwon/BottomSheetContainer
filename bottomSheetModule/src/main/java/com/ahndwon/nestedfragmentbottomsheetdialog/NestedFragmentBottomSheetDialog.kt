@@ -3,6 +3,7 @@ package com.ahndwon.nestedfragmentbottomsheetdialog
 import LockableBottomSheetBehavior
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
@@ -303,8 +304,15 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                 super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
         setDialogShowState(dialog)
+        invokeNestedFragmentOnShow(dialog)
 
         return dialog
+    }
+
+    private fun invokeNestedFragmentOnShow(dialog: BottomSheetDialog) {
+        (fragment as? DialogInterface.OnShowListener).let {
+            it?.onShow(dialog)
+        }
     }
 
     private fun setDialogShowState(dialog: BottomSheetDialog) {
