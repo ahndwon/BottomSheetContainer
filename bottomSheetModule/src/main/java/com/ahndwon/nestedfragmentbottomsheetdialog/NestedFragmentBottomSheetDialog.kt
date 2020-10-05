@@ -1,5 +1,6 @@
 package com.ahndwon.nestedfragmentbottomsheetdialog
 
+import LockableBottomSheetBehavior
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Point
@@ -108,9 +109,11 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     private var isMarginExpanded: Boolean
 
-    var isLockSwipe: Boolean
-
     var slideOffset: Double = DEFAULT_SLIDE_OFFSET
+
+    private var isFixed: Boolean = false
+
+    private var isHalfScreenPeekHeight: Boolean = false
 
     init {
         this.fragment = builder.fragment
@@ -134,8 +137,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.outerViewOnClick = builder.outerViewOnClick
         this.toolbarBackground = builder.toolbarBackground
         this.callback = builder.callback
-        this.isLockSwipe = builder.isLockSwipe
         this.slideOffset = builder.slideOffset
+        this.isFixed = builder.isFixed
+        this.isHalfScreenPeekHeight = builder.isHalfScreenPeekHeight
 
         isMarginExpanded = !isFullScreen
     }
@@ -219,27 +223,27 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
                     val outerLayoutHeight = if (isOuterView) outerLayout.measuredHeight else 0
 
-                    this.height = firstMeasureHeight - convertDpToPx(view.context, topMargin) - outerLayoutHeight
+                    this.height =
+                            firstMeasureHeight - convertDpToPx(view.context, topMargin) - outerLayoutHeight
                 }
             }
         }
     }
 
     private fun getFragmentContainerSize(): Int {
-        val toolbarHeight = if (isRemoveToolbar) {
+        return getContainerSizeWithoutToolbar() - getToolbarHeight()
+    }
+
+    private fun getContainerSizeWithoutToolbar(): Int {
+        return getRealDeviceHeight() - getStatusBarHeight() - getNavigationBarHeight()
+    }
+
+    private fun getToolbarHeight(): Int {
+        return if (isRemoveToolbar) {
             0
         } else {
             view?.toolbar?.layoutParams?.height ?: 0
         }
-
-        val navigationBarHeight = if (isSoftNavigationKeys()) {
-            getNavigationBarHeight()
-        } else {
-            0
-        }
-
-        return getRealDeviceHeight() - getStatusBarHeight() - navigationBarHeight - toolbarHeight
-
     }
 
     private fun isSoftNavigationKeys(): Boolean {
@@ -262,10 +266,14 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
     }
 
     private fun getNavigationBarHeight(): Int {
-        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else 0
+        return if (isSoftNavigationKeys()) {
+            val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+            return if (resourceId > 0) {
+                resources.getDimensionPixelSize(resourceId)
+            } else 0
+        } else {
+            0
+        }
     }
 
     override fun onResume() {
@@ -308,7 +316,12 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                     shownDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
                             ?: return@setOnShowListener
 
-            val behavior = BottomSheetBehavior.from(bottomSheet)
+            val behavior: BottomSheetBehavior<View> = if (isFixed) {
+                LockableBottomSheetBehavior.from(bottomSheet)
+            } else {
+                BottomSheetBehavior.from(bottomSheet)
+            }
+
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
             behavior.isHideable = isHideable
@@ -348,7 +361,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         }
 
         if (outerView == null && fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
-                isFullScreen) {
+                isFullScreen
+        ) {
             setFullscreenWithMargin()
         }
 
@@ -409,6 +423,12 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         peekHeight?.let { peekHeight ->
             sheetBehavior?.peekHeight = convertDpToPx(inflated.context, peekHeight)
             sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            return
+        }
+
+        if (isHalfScreenPeekHeight) {
+            sheetBehavior?.peekHeight = getContainerSizeWithoutToolbar() / 2
+            sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -464,10 +484,6 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (isLockSwipe && newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    return
-                }
 
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     hasExpanded = true
@@ -478,7 +494,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 
                     if (fragment.view?.layoutParams?.height == WindowManager.LayoutParams.MATCH_PARENT ||
-                            isFullScreen && outerView == null) {
+                            isFullScreen && outerView == null
+                    ) {
                         setFullscreenWithMargin()
                     }
 
@@ -670,7 +687,7 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var callback: BottomSheetBehavior.BottomSheetCallback? = null
             private set
 
-        var isLockSwipe: Boolean = false
+        var isFixed: Boolean = false
             private set
 
         var slideOffset: Double = DEFAULT_SLIDE_OFFSET
@@ -868,12 +885,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          *
          * bottom sheet 을 swipe 해도 움직이지 않음
          *
-         * 단, 반드시 showExpanded == true 여야 한다.
-         *
          */
-        fun lockSwipe() = apply {
-            this.isLockSwipe = true
-            this.showExpanded = true
+        fun fixBottomSheet() = apply {
+            this.isFixed = true
         }
 
         /**
@@ -887,6 +901,12 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          *
          */
         fun setSlideOffset(offset: Double) = apply { this.slideOffset = offset }
+
+        var isHalfScreenPeekHeight: Boolean = false
+            private set
+
+        fun setHalfScreenPeekHeight(isHalfScreenPeekHeight: Boolean) =
+                apply { this.isHalfScreenPeekHeight = isHalfScreenPeekHeight }
 
         /**
          * ExpandableBottomSheetDialog 빌드
