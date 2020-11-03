@@ -5,7 +5,5 @@
         android:topLeftRadius="@dimen/bottom_sheet_corner_radius"
         android:topRightRadius="@dimen/bottom_sheet_corner_radius" />
 
-    <solid android:color="@color/white" />
-    <!--    <solid android:color="@android:color/transparent" />-->
-
+    <solid android:color="@android:color/transparent" />
 </shape>

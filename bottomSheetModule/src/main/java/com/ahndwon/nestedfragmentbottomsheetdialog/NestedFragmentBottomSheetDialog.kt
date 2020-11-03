@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.KeyEvent.KEYCODE_BACK
 import android.view.KeyEvent.KEYCODE_HOME
@@ -116,6 +117,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
 
     private var isHalfScreenPeekHeight: Boolean = false
 
+    var isTransparent: Boolean = false
+
     init {
         this.fragment = builder.fragment
         this.isExpandHandle = builder.isExpandHandle
@@ -141,8 +144,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         this.slideOffset = builder.slideOffset
         this.isFixed = builder.isFixed
         this.isHalfScreenPeekHeight = builder.isHalfScreenPeekHeight
-
-        isMarginExpanded = !isFullScreen
+        this.isTransparent = builder.isTransparent
+        isMarginExpanded = !isFullScreen && topMargin != 0f
     }
 
     /**
@@ -150,12 +153,25 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
      *
      * @return
      */
-    override fun getTheme(): Int = when {
-        isRemoveDim && outerView == null -> R.style.NoDimBottomSheetDialogTheme
+    override fun getTheme(): Int {
+        Log.d("BottomSheet", "getTheme: $isTransparent, ${R.style.TransparentBottomSheetDialogTheme}")
+        val value = when {
+            isRemoveDim && outerView == null -> R.style.NoDimBottomSheetDialogTheme
 
-        outerView != null || isMarginExpanded -> R.style.OuterViewBottomSheetDialogTheme
+            outerView != null || isMarginExpanded -> R.style.OuterViewBottomSheetDialogTheme
 
-        else -> R.style.BottomSheetDialogTheme
+            isTransparent -> R.style.TransparentBottomSheetDialogTheme
+
+            else -> R.style.BottomSheetDialogTheme
+        }
+
+        Log.d("BottomSheet", "value: $value, ${R.style.TransparentBottomSheetDialogTheme}")
+        Log.d("BottomSheet", "value: $value, ${R.style.BottomSheetDialogTheme}")
+        Log.d("BottomSheet", "value: $value, ${R.style.OuterViewBottomSheetDialogTheme}")
+        Log.d("BottomSheet", "value: $value, ${R.style.NoDimBottomSheetDialogTheme}")
+
+        return value
+
     }
 
     override fun onCreateView(
@@ -701,6 +717,8 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         var slideOffset: Double = DEFAULT_SLIDE_OFFSET
             private set
 
+        var isTransparent: Boolean = false
+
         fun setExpandHandle(isExpandHandle: Boolean) =
                 apply { this.isExpandHandle = isExpandHandle }
 
@@ -909,6 +927,14 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
          *
          */
         fun setSlideOffset(offset: Double) = apply { this.slideOffset = offset }
+
+        /**
+         * Bottom Sheet transparent 설정
+         *
+         * bottom sheet background 를 투명하게 함
+         *
+         */
+        fun setTransparentBackground() = apply { this.isTransparent = true }
 
         var isHalfScreenPeekHeight: Boolean = false
             private set

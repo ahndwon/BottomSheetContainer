@@ -199,6 +199,12 @@
         android:text="fix_height"
         tools:ignore="HardcodedText" />
 
+    <Button
+        android:id="@+id/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="transparent"
+        tools:ignore="HardcodedText" />
 
 </GridLayout>
 
