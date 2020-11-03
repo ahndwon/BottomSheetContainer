@@ -109,7 +109,8 @@ class MainActivity : AppCompatActivity() {
 //                .showExpanded(true)
                     .setFullScreen(true)
                     .setExpandHandle(true)
-                    .build().show(supportFragmentManager, "")
+                    .build()
+                    .show(supportFragmentManager, "")
         }
 
         peekHeight100Button.setOnClickListener {
@@ -254,6 +255,12 @@ class MainActivity : AppCompatActivity() {
 //                    .showExpanded(true)
 //                    .setPeekHeight(400f)
 //                    .setExpandHandle(true)
+                    .build().show(supportFragmentManager, "")
+        }
+
+        transparent.setOnClickListener {
+            NestedFragmentBottomSheetDialog.Builder(TestFragment())
+                    .setTransparentBackground()
                     .build().show(supportFragmentManager, "")
         }
     }

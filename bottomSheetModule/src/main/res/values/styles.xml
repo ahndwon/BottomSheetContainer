@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog">
-
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
     </style>
 
-    <style name="NoDimBottomSheetDialogTheme" parent="BaseBottomSheetDialog">
-
+    <style name="NoDimBottomSheetDialogTheme" parent="NoDimBottomSheetDialog">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
     </style>
 
     <style name="OuterViewBottomSheetDialogTheme" parent="OuterViewBottomSheetDialog">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
+    </style>
 
+    <style name="TransparentBottomSheetDialogTheme" parent="TransparentBottomSheetDialog">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        </item>
+    </style>
+
+    <style name="TransparentBottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet_transparent</item>
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
@@ -25,8 +37,12 @@
 
     <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@color/dimBackground</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="TransparentBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/TransparentBottomSheet</item>
     </style>
 
     <style name="NoDimBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
@@ -37,7 +53,6 @@
 
     <style name="OuterViewBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@color/dimBackground</item>
         <item name="bottomSheetStyle">@style/OuterViewBottomSheet</item>
     </style>
 
