@@ -248,9 +248,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         fix_height.setOnClickListener {
-            NestedFragmentBottomSheetDialog.Builder(TestFixHeightFragment())
+            NestedFragmentBottomSheetDialog.Builder(TestFragment())
                     .setTopMargin(50f)
                     .setPeekHeight(500f)
+                    .fixBottomSheet()
+                    .showExpanded(true)
 //                    .setFullScreen(true)
 //                    .showExpanded(true)
 //                    .setPeekHeight(400f)
@@ -260,6 +262,17 @@ class MainActivity : AppCompatActivity() {
 
         transparent.setOnClickListener {
             NestedFragmentBottomSheetDialog.Builder(TestFragment())
+                    .setTransparentBackground()
+                    .build().show(supportFragmentManager, "")
+        }
+
+        webView.setOnClickListener {
+            NestedFragmentBottomSheetDialog.Builder(WebViewFragment())
+//                    .setTopMargin(50f)
+//                    .setPeekHeight(500f)
+                    .removeToolbar(true)
+                    .fixBottomSheet()
+                    .showExpanded(true)
                     .setTransparentBackground()
                     .build().show(supportFragmentManager, "")
         }
