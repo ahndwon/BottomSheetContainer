@@ -302,7 +302,11 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
                 dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout
 
         bottomSheet?.let {
-            sheetBehavior = BottomSheetBehavior.from(it)
+            sheetBehavior = if (isFixed) {
+                LockableBottomSheetBehavior.from(it)
+            } else {
+                BottomSheetBehavior.from(it)
+            }
         }
 
         this@NestedFragmentBottomSheetDialog.view?.let {
@@ -335,20 +339,9 @@ class NestedFragmentBottomSheetDialog<T : Fragment> private constructor(builder:
         dialog.setOnShowListener { dialogInterface ->
             if (showExpanded.not()) return@setOnShowListener
 
-            val shownDialog: BottomSheetDialog = dialogInterface as BottomSheetDialog
-            val bottomSheet =
-                    shownDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                            ?: return@setOnShowListener
+            sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
-            val behavior: BottomSheetBehavior<View> = if (isFixed) {
-                LockableBottomSheetBehavior.from(bottomSheet)
-            } else {
-                BottomSheetBehavior.from(bottomSheet)
-            }
-
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-            behavior.isHideable = isHideable
+            sheetBehavior?.isHideable = isHideable
         }
     }
 
